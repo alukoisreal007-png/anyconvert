@@ -1,0 +1,24 @@
+# Security & Local Configuration
+config.js
+
+# Python cache & environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.env
+venv/
+env/
+
+# Test outputs & downloaded media
+test_outputs/
+downloads/
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE & Editor settings
+.vscode/
+.idea/

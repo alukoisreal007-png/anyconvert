@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AnyConvert Studio - All-in-One Personal Converter & Recorder</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Offline-First JS Libraries -->
+  <script src="lib/jszip.min.js"></script>
+  <script src="lib/mammoth.browser.min.js"></script>
+  <script src="lib/html2pdf.bundle.min.js"></script>
+  <script src="lib/pdf-lib.min.js"></script>
+  <script src="lib/docx.umd.js"></script>
+  <script src="config.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon ai-logo-wrap">
+          <!-- Animated AI Logo -->
+          <div class="ai-orb">
+            <div class="ai-orb-core"></div>
+            <div class="ai-ring ai-ring-1"></div>
+            <div class="ai-ring ai-ring-2"></div>
+            <div class="ai-ring ai-ring-3"></div>
+            <div class="ai-particles">
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+        </div>
+        <div class="brand-text">
+          <h2>AnyConvert</h2>
+          <span class="badge">PRO SUITE</span>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <div class="nav-section-label">DOCUMENT CONVERTERS</div>
+        <button class="nav-item active" data-tab="tab-docx2pdf">
+          <i class="fa-solid fa-file-pdf icon-pdf"></i>
+          <span>DOCX to PDF</span>
+        </button>
+        <button class="nav-item" data-tab="tab-img2pdf">
+          <i class="fa-solid fa-images icon-img"></i>
+          <span>Images to PDF (Batch)</span>
+        </button>
+        <button class="nav-item" data-tab="tab-ppt2word">
+          <i class="fa-solid fa-file-word icon-word"></i>
+          <span>PPT to Word</span>
+        </button>
+        <button class="nav-item" data-tab="tab-ppt2pdf">
+          <i class="fa-solid fa-file-powerpoint icon-ppt"></i>
+          <span>PPT to PDF</span>
+        </button>
+
+        <div class="nav-section-label">MEDIA & SCREEN</div>
+        <button class="nav-item" data-tab="tab-screenrec">
+          <i class="fa-solid fa-video icon-rec"></i>
+          <span>Screen Recorder & Lab</span>
+        </button>
+        <button class="nav-item" data-tab="tab-imgopt">
+          <i class="fa-solid fa-file-image icon-img"></i>
+          <span>Image Compressor</span>
+        </button>
+
+        <div class="nav-section-label">FILE UTILITIES</div>
+        <button class="nav-item" data-tab="tab-pdfmerge">
+          <i class="fa-solid fa-object-group icon-tools"></i>
+          <span>PDF Merger</span>
+        </button>
+        <button class="nav-item" data-tab="tab-mediaext">
+          <i class="fa-solid fa-file-audio icon-media"></i>
+          <span>Audio Extractor</span>
+        </button>
+
+        <div class="nav-section-label">ONLINE UTILITIES</div>
+        <button class="nav-item" data-tab="tab-viddownload">
+          <i class="fa-solid fa-cloud-arrow-down icon-rec"></i>
+          <span>Video Link Downloader</span>
+        </button>
+
+        <div class="nav-section-label">MARKET INTELLIGENCE</div>
+        <button class="nav-item" data-tab="tab-reddit-ideas">
+          <i class="fa-solid fa-fire-burner icon-ppt"></i>
+          <span>Market Foundry</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sys-status">
+          <span class="status-dot online"></span>
+          <span id="backend-status-text">Client Engine Active</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top Header Bar -->
+      <header class="top-header">
+        <div class="header-title">
+          <h1 id="page-title">DOCX to PDF Converter</h1>
+          <p id="page-desc">Convert Word documents into high-quality vector PDF files with preserved formatting.</p>
+        </div>
+        <div class="header-actions">
+          <button class="btn-icon" id="btn-theme-toggle" title="Toggle Light/Dark Theme">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+          <div class="user-chip">
+            <i class="fa-solid fa-user-gear"></i>
+            <span>Personal Workspace</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Workspace Body (Tabs) -->
+      <div class="workspace">
+        
+        <!-- 1. DOCX to PDF TAB -->
+        <section id="tab-docx2pdf" class="tab-pane active">
+          <div class="tool-card">
+            <div class="drop-zone" id="drop-docx">
+              <i class="fa-solid fa-cloud-arrow-up drop-icon"></i>
+              <h3>Drag & Drop your Word Document (.docx)</h3>
+              <p>or click to browse from your computer</p>
+              <input type="file" id="input-docx" accept=".docx,.doc" class="file-input">
+            </div>
+
+            <div class="file-preview-list" id="preview-docx-list"></div>
+
+            <div class="tool-controls">
+              <div class="control-group">
+                <label>Page Orientation:</label>
+                <select id="docx-orientation" class="form-select">
+                  <option value="portrait">Portrait</option>
+                  <option value="landscape">Landscape</option>
+                </select>
+              </div>
+              <div class="control-group">
+                <label>Margin Preset:</label>
+                <select id="docx-margin" class="form-select">
+                  <option value="10">Normal (10mm)</option>
+                  <option value="5">Narrow (5mm)</option>
+                  <option value="20">Wide (20mm)</option>
+                </select>
+              </div>
+              <button id="btn-convert-docx2pdf" class="btn-primary btn-large" disabled>
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Convert to PDF
+              </button>
+            </div>
+
+            <div class="result-box hidden" id="result-docx2pdf">
+              <div class="result-header">
+                <i class="fa-solid fa-circle-check success-icon"></i>
+                <div>
+                  <h4>Conversion Complete!</h4>
+                  <p id="docx2pdf-filename">document.pdf ready for download</p>
+                </div>
+              </div>
+              <div class="result-actions">
+                <button id="btn-dl-docx2pdf" class="btn-success">
+                  <i class="fa-solid fa-download"></i> Download PDF
+                </button>
+                <button id="btn-prev-docx2pdf" class="btn-secondary">
+                  <i class="fa-solid fa-eye"></i> Quick View
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. BATCH IMAGES TO PDF TAB -->
+        <section id="tab-img2pdf" class="tab-pane">
+          <div class="tool-card">
+            <div class="drop-zone" id="drop-img2pdf">
+              <i class="fa-solid fa-images drop-icon icon-img"></i>
+              <h3>Drag & Drop Multiple Images (JPG, PNG, WEBP, BMP, GIF)</h3>
+              <p>Upload as many images as you want to merge into a single PDF document</p>
+              <input type="file" id="input-img2pdf" accept="image/*" multiple class="file-input">
+            </div>
+
+            <div class="img-grid-preview" id="preview-img2pdf-grid"></div>
+
+            <div class="tool-controls">
+              <div class="control-group">
+                <label>Page Orientation:</label>
+                <select id="img2pdf-orientation" class="form-select">
+                  <option value="auto">Auto (Match Image Aspect Ratio)</option>
+                  <option value="portrait">Portrait (A4 Vertical)</option>
+                  <option value="landscape">Landscape (A4 Horizontal)</option>
+                </select>
+              </div>
+
+              <div class="control-group">
+                <label>Page Margin:</label>
+                <select id="img2pdf-margin" class="form-select">
+                  <option value="0">Fit to Page (No Margin)</option>
+                  <option value="10">Small Margin (10px)</option>
+                  <option value="25">Standard Margin (25px)</option>
+                </select>
+              </div>
+
+              <button id="btn-convert-img2pdf" class="btn-primary btn-large" disabled>
+                <i class="fa-solid fa-file-pdf"></i> Convert Images to PDF (<span id="img2pdf-count">0</span>)
+              </button>
+            </div>
+
+            <div class="result-box hidden" id="result-img2pdf">
+              <div class="result-header">
+                <i class="fa-solid fa-circle-check success-icon"></i>
+                <div>
+                  <h4>Images Converted to PDF!</h4>
+                  <p id="img2pdf-filename">combined_images.pdf ready</p>
+                </div>
+              </div>
+              <div class="result-actions">
+                <button id="btn-dl-img2pdf" class="btn-success">
+                  <i class="fa-solid fa-download"></i> Download PDF
+                </button>
+                <button id="btn-prev-img2pdf" class="btn-secondary">
+                  <i class="fa-solid fa-eye"></i> Quick View
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. SCREEN RECORDER & TINY WEIGHT EDITOR LAB TAB -->
+        <section id="tab-screenrec" class="tab-pane">
+          <div class="tool-card">
+            
+            <!-- Mode Switcher Tabs -->
+            <div class="recorder-mode-switcher">
+              <div class="mode-pills">
+                <button type="button" class="mode-pill active" id="pill-mode-record">
+                  <i class="fa-solid fa-video"></i> Screen Recorder
+                </button>
+                <button type="button" class="mode-pill" id="pill-mode-editor">
+                  <i class="fa-solid fa-scissors"></i> Tiny Weight Editor Lab
+                  <span class="pill-badge" id="editor-clip-badge" style="display:none;">Ready</span>
+                </button>
+              </div>
+              <div class="mode-actions">
+                <label class="btn-secondary btn-sm" style="cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+                  <i class="fa-solid fa-folder-open"></i> Open Video File
+                  <input type="file" id="input-editor-video" accept="video/*" style="display:none;">
+                </label>
+              </div>
+            </div>
+
+            <!-- VIEW A: SCREEN RECORDER -->
+            <div id="view-screen-recorder" class="rec-view-pane">
+              <div class="rec-guide-banner">
+                <i class="fa-solid fa-desktop icon-rec" style="font-size: 24px;"></i>
+                <div>
+                  <h4><i class="fa-solid fa-circle-info"></i> Full Computer Desktop Recording (Win + G Style)</h4>
+                  <p>When you click <strong>Start Recording</strong>, select <strong>"Entire Screen"</strong> in the browser prompt to record all apps, games, windows, and desktop activities across your computer!</p>
+                </div>
+              </div>
+
+              <div class="rec-grid">
+                
+                <div class="rec-preview-container" id="rec-preview-container">
+                  
+                  <div class="rec-overlay" id="rec-overlay">
+                    <div class="rec-pulse-radar">
+                      <i class="fa-solid fa-display rec-idle-icon"></i>
+                    </div>
+                    <h3>Ready for Full Desktop Recording</h3>
+                    <p>Click "Start Recording" to capture your entire computer screen & sound</p>
+                  </div>
+
+                  <div class="rec-active-dashboard hidden" id="rec-active-dashboard">
+                    <div class="rec-live-pulse-badge">
+                      <span class="pulse-dot"></span> LIVE RECORDING ACTIVE
+                    </div>
+                    <div class="rec-timer-display" id="rec-timer">00:00:00</div>
+                    <p class="rec-status-note">
+                      <i class="fa-solid fa-circle-check" style="color: var(--accent-success);"></i> 
+                      Capturing your entire computer desktop! Switch to any app, browser tab, or software.
+                    </p>
+                    
+                    <div class="rec-audio-visualizer">
+                      <div class="audio-bar bar-1"></div>
+                      <div class="audio-bar bar-2"></div>
+                      <div class="audio-bar bar-3"></div>
+                      <div class="audio-bar bar-4"></div>
+                      <div class="audio-bar bar-5"></div>
+                    </div>
+                  </div>
+
+                  <video id="rec-video-preview" controls class="rec-video hidden"></video>
+
+                </div>
+
+                <div class="rec-settings-panel">
+                  <h3><i class="fa-solid fa-sliders"></i> Recording Configuration</h3>
+                  
+                  <div class="control-group">
+                    <label>Audio Source:</label>
+                    <select id="rec-audio-source" class="form-select">
+                      <option value="none" selected>Mute / Screen Only (No Mic Prompts - Fast & Smooth)</option>
+                      <option value="system_only">System Audio Only (Computer Sounds / Media)</option>
+                      <option value="mic_only">Microphone Only (Voice Narration)</option>
+                      <option value="system_mic">System Audio + Microphone (Mixed)</option>
+                    </select>
+                  </div>
+
+                  <div class="control-group">
+                    <label>Video Quality / FPS:</label>
+                    <select id="rec-fps" class="form-select">
+                      <option value="60">1080p @ 60 FPS (Ultra Smooth)</option>
+                      <option value="30" selected>1080p @ 30 FPS (Standard)</option>
+                      <option value="15">720p @ 15 FPS (Compact Size)</option>
+                    </select>
+                  </div>
+
+                  <div class="control-group">
+                    <label>Output Format:</label>
+                    <select id="rec-format" class="form-select">
+                      <option value="video/mp4">MP4 (H.264 / AAC - Recommended)</option>
+                      <option value="video/webm">WebM (VP9 High Quality)</option>
+                    </select>
+                  </div>
+
+                  <div class="control-group checkbox-group" style="display:flex; align-items:center; gap:8px; margin-top:2px;">
+                    <input type="checkbox" id="rec-auto-open-editor" checked style="accent-color: var(--accent-primary); width:16px; height:16px;">
+                    <label for="rec-auto-open-editor" style="margin:0; font-size:13px; cursor:pointer;">
+                      Open directly in <strong>Editor Lab</strong> after recording
+                    </label>
+                  </div>
+
+                  <div class="rec-action-buttons">
+                    <button id="btn-start-rec" class="btn-primary btn-large">
+                      <i class="fa-solid fa-circle-dot"></i> Start Full Screen Recording
+                    </button>
+                    <button id="btn-stop-rec" class="btn-danger btn-large hidden" disabled>
+                      <i class="fa-solid fa-square"></i> Stop & Finish Recording
+                    </button>
+                  </div>
+
+                  <div id="rec-downloads" class="rec-downloads-list"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- VIEW B: TINY WEIGHT VIDEO EDITOR LAB -->
+            <div id="view-editor-lab" class="rec-view-pane hidden">
+              <div class="editor-lab-container">
+                
+                <!-- Editor Top Header -->
+                <div class="editor-header-bar">
+                  <div class="editor-file-meta">
+                    <span class="editor-file-tag"><i class="fa-solid fa-film"></i> EDITOR LAB</span>
+                    <strong id="editor-video-filename">No video loaded</strong>
+                    <span id="editor-video-specs" class="editor-specs-pill">-- x -- • 00:00</span>
+                  </div>
+                  <div class="editor-header-actions">
+                    <button type="button" class="btn-secondary btn-sm" id="btn-editor-reset-edits" title="Restore full video frame and trims">
+                      <i class="fa-solid fa-rotate-left"></i> Reset All Edits
+                    </button>
+                    <label class="btn-secondary btn-sm" style="cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+                      <i class="fa-solid fa-upload"></i> Load Video File
+                      <input type="file" id="input-editor-video-btn" accept="video/*" style="display:none;">
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Main 2-Column Editor Workspace -->
+                <div class="editor-workspace-grid">
+                  
+                  <!-- Left Column: Video Preview, Interactive Crop Canvas & Direct Scrubber -->
+                  <div class="editor-preview-column">
+                    
+                    <!-- Top Stage Crop Mode & Aspect Preset Toolbar -->
+                    <div class="editor-stage-toolbar">
+                      <div class="stage-toolbar-modes">
+                        <button type="button" class="stage-pill-btn active" id="btn-mode-crop-adjust" title="Enlarge, tighten, and widen crop frame directly with cursor">
+                          <i class="fa-solid fa-crop-simple"></i> <span>Crop Frame</span>
+                        </button>
+                        <button type="button" class="stage-pill-btn" id="btn-mode-crop-view" title="Preview video with cropped-out area removed">
+                          <i class="fa-solid fa-scissors"></i> <span>Crop View (Removed)</span>
+                        </button>
+                        <button type="button" class="stage-pill-btn btn-ghost" id="btn-crop-reset-top" title="Reset crop frame to full source frame">
+                          <i class="fa-solid fa-expand"></i> <span>Full Frame</span>
+                        </button>
+                      </div>
+
+                      <div class="stage-aspect-presets" id="stage-aspect-presets">
+                        <span class="stage-aspect-chip active" data-crop="full">Full</span>
+                        <span class="stage-aspect-chip" data-crop="16:9">16:9</span>
+                        <span class="stage-aspect-chip" data-crop="9:16">9:16</span>
+                        <span class="stage-aspect-chip" data-crop="1:1">1:1</span>
+                        <span class="stage-aspect-chip" data-crop="4:3">4:3</span>
+                        <span class="stage-aspect-chip" data-crop="custom">Free</span>
+                      </div>
+                    </div>
+
+                    <!-- Video Canvas Stage Wrapper -->
+                    <div class="editor-stage-wrapper" id="editor-stage-wrapper">
+                      <!-- Source Video Element -->
+                      <video id="editor-video-source" playsinline class="editor-stage-video"></video>
+                      
+                      <!-- Interactive Crop / Cropped View Canvas Overlay -->
+                      <canvas id="editor-crop-canvas" class="editor-crop-overlay hidden"></canvas>
+                      
+                      <!-- Draggable & Resizable 8-Handle Crop Bounding Box -->
+                      <div id="editor-crop-box" class="editor-crop-box hidden">
+                        <!-- Rule of Thirds Grid -->
+                        <div class="crop-grid-lines">
+                          <div class="crop-line-h crop-line-h1"></div>
+                          <div class="crop-line-h crop-line-h2"></div>
+                          <div class="crop-line-v crop-line-v1"></div>
+                          <div class="crop-line-v crop-line-v2"></div>
+                        </div>
+                        
+                        <!-- Aspect Badge & Move Guide -->
+                        <div class="crop-aspect-badge" id="crop-aspect-badge">16:9</div>
+                        <div class="crop-move-hint"><i class="fa-solid fa-arrows-up-down-left-right"></i> Move</div>
+
+                        <!-- 8 Precise Drag Handles for Enlarge / Tighten / Widen -->
+                        <div class="crop-handle crop-handle-nw" data-handle="nw" title="Resize Top-Left"></div>
+                        <div class="crop-handle crop-handle-ne" data-handle="ne" title="Resize Top-Right"></div>
+                        <div class="crop-handle crop-handle-se" data-handle="se" title="Resize Bottom-Right"></div>
+                        <div class="crop-handle crop-handle-sw" data-handle="sw" title="Resize Bottom-Left"></div>
+                        <div class="crop-handle crop-handle-n" data-handle="n" title="Resize Top"></div>
+                        <div class="crop-handle crop-handle-s" data-handle="s" title="Resize Bottom"></div>
+                        <div class="crop-handle crop-handle-w" data-handle="w" title="Resize Left"></div>
+                        <div class="crop-handle crop-handle-e" data-handle="e" title="Resize Right"></div>
+                      </div>
+                    </div>
+
+                    <!-- Modern Floating Glassmorphic Transport & Quick Trim Bar -->
+                    <div class="editor-transport-bar">
+                      <div class="transport-left">
+                        <button type="button" class="btn-icon" id="btn-editor-step-back" title="Step Back 1s (←)">
+                          <i class="fa-solid fa-backward-step"></i>
+                        </button>
+                        <button type="button" class="btn-icon btn-play" id="btn-editor-play-pause" title="Play/Pause (Space)">
+                          <i class="fa-solid fa-play" id="editor-play-icon"></i>
+                        </button>
+                        <button type="button" class="btn-icon" id="btn-editor-step-fwd" title="Step Forward 1s (→)">
+                          <i class="fa-solid fa-forward-step"></i>
+                        </button>
+                        <button type="button" class="btn-icon" id="btn-editor-preview-loop" title="Loop Trimmed Selection (L)">
+                          <i class="fa-solid fa-repeat"></i>
+                        </button>
+                      </div>
+
+                      <div class="transport-center">
+                        <span id="editor-time-current" class="time-readout">00:00.00</span>
+                        <span class="time-sep">/</span>
+                        <span id="editor-time-total" class="time-readout-muted">00:00.00</span>
+                      </div>
+
+                      <div class="transport-right">
+                        <!-- Direct One-Click Trimming on Playback Menu -->
+                        <button type="button" class="btn-transport-action btn-trim-in" id="btn-transport-trim-in" title="Trim Start at current cursor position (I)">
+                          <i class="fa-solid fa-arrow-right-to-bracket"></i> <span>Trim In</span>
+                        </button>
+                        <button type="button" class="btn-transport-action btn-trim-out" id="btn-transport-trim-out" title="Trim End at current cursor position (O)">
+                          <i class="fa-solid fa-arrow-left-to-bracket"></i> <span>Trim Out</span>
+                        </button>
+                        <button type="button" class="btn-transport-action btn-split" id="btn-transport-split" title="Split clip at playhead (C)">
+                          <i class="fa-solid fa-scissors"></i> <span>Split</span>
+                        </button>
+                        <button type="button" class="btn-icon" id="btn-editor-mute" title="Toggle Mute (M)">
+                          <i class="fa-solid fa-volume-high" id="editor-vol-icon"></i>
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- Main Timeline Scrubber with Direct Cursor Trimming -->
+                    <div class="editor-timeline-container">
+                      <div class="timeline-ticks-header">
+                        <span id="timeline-tick-0">00:00.00</span>
+                        <span id="timeline-tick-50" class="timeline-tick-mid">--:--</span>
+                        <span class="timeline-trim-badge" id="timeline-trim-badge">Trimmed: 00:00.00</span>
+                        <span id="timeline-tick-100">--:--</span>
+                      </div>
+
+                      <div class="timeline-track-wrapper" id="timeline-track-wrapper" title="Click or drag to scrub playhead">
+                        <!-- Background Progress Bar with Cut Dimming -->
+                        <div class="timeline-track-bg">
+                          <!-- Excluded Left Cut Overlay -->
+                          <div class="timeline-cut-overlay timeline-cut-left" id="timeline-cut-left"></div>
+                          
+                          <!-- Trim Active Kept Window Highlight -->
+                          <div class="timeline-trim-highlight" id="timeline-trim-highlight">
+                            <span class="trim-range-indicator"><i class="fa-solid fa-film"></i> KEPT RANGE</span>
+                          </div>
+
+                          <!-- Excluded Right Cut Overlay -->
+                          <div class="timeline-cut-overlay timeline-cut-right" id="timeline-cut-right"></div>
+                          
+                          <!-- Split Markers Container -->
+                          <div class="timeline-split-markers" id="timeline-split-markers"></div>
+                          
+                          <!-- Current Playhead Needle -->
+                          <div class="timeline-playhead-needle" id="timeline-playhead-needle">
+                            <div class="playhead-knob"></div>
+                          </div>
+
+                          <!-- Live Hover Cursor Needle & Tooltip -->
+                          <div class="timeline-hover-needle hidden" id="timeline-hover-needle"></div>
+                          <div class="timeline-hover-tooltip hidden" id="timeline-hover-tooltip">00:00.00</div>
+                        </div>
+
+                        <!-- Precision Drag Handles (In and Out) with Grippers -->
+                        <div class="timeline-handle handle-in" id="handle-trim-in" title="Drag to Trim Start (or press I)">
+                          <span class="handle-grip-icon">◀</span>
+                          <span class="handle-line"></span>
+                          <span class="handle-label">IN</span>
+                        </div>
+                        <div class="timeline-handle handle-out" id="handle-trim-out" title="Drag to Trim End (or press O)">
+                          <span class="handle-label">OUT</span>
+                          <span class="handle-line"></span>
+                          <span class="handle-grip-icon">▶</span>
+                        </div>
+                      </div>
+
+                      <!-- Keyboard Shortcuts Bar -->
+                      <div class="editor-shortcuts-bar">
+                        <span class="shortcut-chip"><kbd>Space</kbd> Play/Pause</span>
+                        <span class="shortcut-chip"><kbd>I</kbd> Trim Start</span>
+                        <span class="shortcut-chip"><kbd>O</kbd> Trim End</span>
+                        <span class="shortcut-chip"><kbd>C</kbd> Split</span>
+                        <span class="shortcut-chip"><kbd>X</kbd> Crop Box</span>
+                        <span class="shortcut-chip"><kbd>V</kbd> Crop View</span>
+                        <span class="shortcut-chip"><kbd>←</kbd><kbd>→</kbd> Seek 1s</span>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <!-- Right Column: Crop Presets, Splitting & High-Res Export -->
+                  <div class="editor-controls-column">
+                    
+                    <!-- Section 1: Cropping Aspect Ratios -->
+                    <div class="editor-card-section">
+                      <div class="section-title-row">
+                        <h4><i class="fa-solid fa-crop-simple"></i> Frame Cropping</h4>
+                        <span class="section-hint" id="current-crop-display">Full (No Crop)</span>
+                      </div>
+                      <div class="crop-presets-grid">
+                        <button type="button" class="btn-preset active" data-crop="full">
+                          <i class="fa-solid fa-expand"></i> Full (No Crop)
+                        </button>
+                        <button type="button" class="btn-preset" data-crop="16:9">
+                          <i class="fa-solid fa-tv"></i> 16:9 Landscape
+                        </button>
+                        <button type="button" class="btn-preset" data-crop="9:16">
+                          <i class="fa-solid fa-mobile-screen"></i> 9:16 Shorts/Reels
+                        </button>
+                        <button type="button" class="btn-preset" data-crop="1:1">
+                          <i class="fa-regular fa-square"></i> 1:1 Square
+                        </button>
+                        <button type="button" class="btn-preset" data-crop="4:3">
+                          <i class="fa-solid fa-desktop"></i> 4:3 Standard
+                        </button>
+                        <button type="button" class="btn-preset" data-crop="custom">
+                          <i class="fa-solid fa-vector-square"></i> Custom Box
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- Section 2: Precise Trimming -->
+                    <div class="editor-card-section">
+                      <div class="section-title-row">
+                        <h4><i class="fa-solid fa-timeline"></i> Trim In / Out Points</h4>
+                        <span class="section-hint" id="trim-duration-display">Duration: 00:00.00</span>
+                      </div>
+                      
+                      <div class="trim-inputs-grid">
+                        <div class="trim-input-cell">
+                          <label>Start (In):</label>
+                          <div class="input-with-actions">
+                            <input type="number" id="input-trim-start" step="0.1" min="0" value="0.0" class="form-input form-input-sm">
+                            <button type="button" class="btn-xs btn-secondary" id="btn-set-in-now" title="Set to current playhead">
+                              Set [
+                            </button>
+                          </div>
+                        </div>
+
+                        <div class="trim-input-cell">
+                          <label>End (Out):</label>
+                          <div class="input-with-actions">
+                            <input type="number" id="input-trim-end" step="0.1" min="0" value="0.0" class="form-input form-input-sm">
+                            <button type="button" class="btn-xs btn-secondary" id="btn-set-out-now" title="Set to current playhead">
+                              Set ]
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="trim-actions-row">
+                        <button type="button" class="btn-secondary btn-sm" id="btn-preview-selection">
+                          <i class="fa-solid fa-play"></i> Preview Selection
+                        </button>
+                        <button type="button" class="btn-secondary btn-sm" id="btn-reset-trim">
+                          <i class="fa-solid fa-arrows-left-right"></i> Full Range
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- Section 3: Splitting & Clip Splicer -->
+                    <div class="editor-card-section">
+                      <div class="section-title-row">
+                        <h4><i class="fa-solid fa-scissors"></i> Clip Splitter & Splicer</h4>
+                        <button type="button" class="btn-primary btn-sm" id="btn-split-at-playhead">
+                          <i class="fa-solid fa-scissors"></i> Split at Playhead
+                        </button>
+                      </div>
+                      <p class="section-desc">Split into clips, delete unwanted mistakes, and merge remaining clips automatically.</p>
+
+                      <!-- Clips List -->
+                      <div class="editor-segments-list" id="editor-segments-list">
+                        <!-- Dynamic segment cards -->
+                        <div class="segment-card active" data-seg-id="0">
+                          <div class="seg-badge">Clip 1</div>
+                          <div class="seg-time">00:00.00 → End</div>
+                          <div class="seg-actions">
+                            <button type="button" class="btn-icon btn-icon-xs btn-preview-seg" title="Preview Clip"><i class="fa-solid fa-play"></i></button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Section 4: High-Resolution Export Engine -->
+                    <div class="editor-card-section export-section">
+                      <div class="section-title-row">
+                        <h4><i class="fa-solid fa-bolt"></i> High-Resolution Export</h4>
+                        <span class="badge" style="background: rgba(5, 150, 105, 0.2); color: var(--accent-success);">Lossless Ready</span>
+                      </div>
+
+                      <div class="export-options-grid">
+                        <div class="control-group">
+                          <label>Resolution:</label>
+                          <select id="export-resolution" class="form-select form-select-sm">
+                            <option value="source" selected>Match Source (Original Quality)</option>
+                            <option value="1080p">1080p Full HD (1920x1080 / 1080x1920)</option>
+                            <option value="720p">720p HD (1280x720 / 720x1280)</option>
+                            <option value="4k">4K Ultra HD (3840x2160)</option>
+                          </select>
+                        </div>
+
+                        <div class="control-group">
+                          <label>Frame Rate:</label>
+                          <select id="export-fps" class="form-select form-select-sm">
+                            <option value="60">60 FPS (Ultra Smooth)</option>
+                            <option value="30" selected>30 FPS (Standard)</option>
+                          </select>
+                        </div>
+
+                        <div class="control-group">
+                          <label>Format:</label>
+                          <select id="export-format" class="form-select form-select-sm">
+                            <option value="mp4" selected>MP4 (H.264 / High Bitrate)</option>
+                            <option value="webm">WebM (VP9 Lossless)</option>
+                          </select>
+                        </div>
+
+                        <div class="control-group">
+                          <label>Bitrate Quality:</label>
+                          <select id="export-bitrate" class="form-select form-select-sm">
+                            <option value="16000000" selected>Ultra High (16 Mbps)</option>
+                            <option value="8000000">High (8 Mbps)</option>
+                            <option value="4000000">Standard (4 Mbps)</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <!-- Export Action & Progress -->
+                      <div class="export-actions-wrapper">
+                        <button type="button" class="btn-success btn-large" id="btn-export-video" style="width:100%;">
+                          <i class="fa-solid fa-file-export"></i> Render & Export High-Res Video
+                        </button>
+                      </div>
+
+                      <!-- Export Progress Panel -->
+                      <div id="export-progress-panel" class="export-progress-panel hidden">
+                        <div class="export-progress-header">
+                          <span id="export-progress-status"><i class="fa-solid fa-spinner fa-spin"></i> Rendering frames...</span>
+                          <span id="export-progress-percent" class="export-percent">0%</span>
+                        </div>
+                        <div class="export-bar-bg">
+                          <div id="export-bar-fill" class="export-bar-fill" style="width:0%;"></div>
+                        </div>
+                        <div class="export-progress-footer">
+                          <span id="export-frame-count">Frame 0 / 0</span>
+                          <button type="button" class="btn-xs btn-danger" id="btn-cancel-export">Cancel</button>
+                        </div>
+                      </div>
+
+                      <!-- Export Download Result -->
+                      <div id="export-result-box" class="export-result-box hidden">
+                        <div class="export-result-card">
+                          <i class="fa-solid fa-circle-check success-icon"></i>
+                          <div class="export-result-meta">
+                            <strong id="export-result-name">AnyConvert_Edited.mp4</strong>
+                            <span id="export-result-size">-- MB</span>
+                          </div>
+                          <a id="export-result-download-link" href="#" download="AnyConvert_Edited.mp4" class="btn-success btn-sm">
+                            <i class="fa-solid fa-download"></i> Download
+                          </a>
+                        </div>
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- 4. PPT TO WORD TAB -->
+        <section id="tab-ppt2word" class="tab-pane">
+          <div class="tool-card">
+            <div class="drop-zone" id="drop-ppt2word">
+              <i class="fa-solid fa-file-powerpoint drop-icon icon-ppt"></i>
+              <h3>Drag & Drop PowerPoint Presentation (.pptx)</h3>
+              <p>Extract slide titles, bullet points, text boxes, and speaker notes into Word (.docx)</p>
+              <input type="file" id="input-ppt2word" accept=".pptx,.ppt" class="file-input">
+            </div>
+
+            <div class="file-preview-list" id="preview-ppt2word-list"></div>
+
+            <div class="tool-controls">
+              <button id="btn-convert-ppt2word" class="btn-primary btn-large" disabled>
+                <i class="fa-solid fa-file-word"></i> Extract & Create Word Doc
+              </button>
+            </div>
+
+            <div class="result-box hidden" id="result-ppt2word">
+              <div class="result-header">
+                <i class="fa-solid fa-circle-check success-icon"></i>
+                <div>
+                  <h4>Presentation Converted to Word!</h4>
+                  <p id="ppt2word-filename">extracted_presentation.docx ready</p>
+                </div>
+              </div>
+              <div class="result-actions">
+                <button id="btn-dl-ppt2word" class="btn-success">
+                  <i class="fa-solid fa-download"></i> Download .DOCX
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. PPT TO PDF TAB -->
+        <section id="tab-ppt2pdf" class="tab-pane">
+          <div class="tool-card">
+            <div class="drop-zone" id="drop-ppt2pdf">
+              <i class="fa-solid fa-file-powerpoint drop-icon icon-ppt"></i>
+              <h3>Drag & Drop PowerPoint Presentation (.pptx)</h3>
+              <p>Convert presentation slides directly into a sleek PDF document</p>
+              <input type="file" id="input-ppt2pdf" accept=".pptx,.ppt" class="file-input">
+            </div>
+
+            <div class="file-preview-list" id="preview-ppt2pdf-list"></div>
+
+            <div class="tool-controls">
+              <button id="btn-convert-ppt2pdf" class="btn-primary btn-large" disabled>
+                <i class="fa-solid fa-file-pdf"></i> Convert PPT to PDF
+              </button>
+            </div>
+
+            <div class="result-box hidden" id="result-ppt2pdf">
+              <div class="result-header">
+                <i class="fa-solid fa-circle-check success-icon"></i>
+                <div>
+                  <h4>PDF Generated Successfully!</h4>
+                  <p id="ppt2pdf-filename">presentation.pdf ready</p>
+                </div>
+              </div>
+              <div class="result-actions">
+                <button id="btn-dl-ppt2pdf" class="btn-success">
+                  <i class="fa-solid fa-download"></i> Download PDF
+                </button>
+                <button id="btn-prev-ppt2pdf" class="btn-secondary">
+                  <i class="fa-solid fa-eye"></i> Quick View
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6. IMAGE COMPRESSOR TAB -->
+        <section id="tab-imgopt" class="tab-pane">
+          <div class="tool-card">
+            <div class="drop-zone" id="drop-imgopt">
+              <i class="fa-solid fa-file-image drop-icon icon-img"></i>
+              <h3>Drag & Drop Images (JPG, PNG, WEBP, BMP)</h3>
+              <p>Reduce image file sizes up to 90% without visible quality loss</p>
+              <input type="file" id="input-imgopt" accept="image/*" class="file-input">
+            </div>
+
+            <div class="img-opt-grid hidden" id="img-opt-editor">
+              <div class="img-compare-container">
+                <div class="img-preview-box">
+                  <h4>Original Image (<span id="img-orig-size">0 KB</span>)</h4>
+                  <div class="img-wrapper">
+                    <img id="img-orig-preview" src="" alt="Original Preview">
+                  </div>
+                </div>
+
+                <div class="img-preview-box">
+                  <h4>Optimized Preview (<span id="img-opt-size">0 KB</span>) <span class="badge-saving" id="img-saving-badge">-0%</span></h4>
+                  <div class="img-wrapper">
+                    <img id="img-opt-preview" src="" alt="Compressed Preview">
+                  </div>
+                </div>
+              </div>
+
+              <div class="img-controls-panel">
+                <div class="control-group">
+                  <div class="slider-header">
+                    <label>Quality Level:</label>
+                    <span id="val-img-quality">80%</span>
+                  </div>
+                  <input type="range" id="slider-img-quality" min="5" max="100" value="80" class="form-range">
+                </div>
+
+                <div class="control-group">
+                  <div class="slider-header">
+                    <label>Max Width/Scale:</label>
+                    <span id="val-img-scale">Original (100%)</span>
+                  </div>
+                  <input type="range" id="slider-img-scale" min="10" max="100" value="100" class="form-range">
+                </div>
+
+                <div class="control-group">
+                  <label>Target Format:</label>
+                  <select id="img-target-format" class="form-select">
+                    <option value="image/jpeg">JPEG (Best for photos)</option>
+                    <option value="image/webp">WEBP (Next-Gen Web Format)</option>
+                    <option value="image/png">PNG (Preserve Transparency)</option>
+                  </select>
+                </div>
+
+                <div class="img-action-buttons">
+                  <button id="btn-save-img" class="btn-success btn-large">
+                    <i class="fa-solid fa-download"></i> Download Compressed Image
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 7. PDF MERGER TAB -->
+        <section id="tab-pdfmerge" class="tab-pane">
+          <div class="tool-card">
+            <h3><i class="fa-solid fa-object-group"></i> PDF Merger & Page Splitter</h3>
+            <div class="drop-zone" id="drop-pdfmerge">
+              <i class="fa-solid fa-copy drop-icon icon-tools"></i>
+              <h3>Drag & Drop Multiple PDF Files</h3>
+              <p>Combine multiple PDFs into one unified document</p>
+              <input type="file" id="input-pdfmerge" accept=".pdf" multiple class="file-input">
+            </div>
+
+            <div class="file-preview-list" id="pdf-merge-list"></div>
+
+            <div class="tool-controls">
+              <button id="btn-merge-pdfs" class="btn-primary btn-large" disabled>
+                <i class="fa-solid fa-layer-group"></i> Merge PDFs Together
+              </button>
+            </div>
+
+            <div class="result-box hidden" id="result-pdfmerge">
+              <div class="result-header">
+                <i class="fa-solid fa-circle-check success-icon"></i>
+                <div>
+                  <h4>PDFs Merged Successfully!</h4>
+                  <p id="pdfmerge-filename">merged_document.pdf ready</p>
+                </div>
+              </div>
+              <div class="result-actions">
+                <button id="btn-dl-pdfmerge" class="btn-success">
+                  <i class="fa-solid fa-download"></i> Download Merged PDF
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 8. AUDIO EXTRACTOR TAB -->
+        <section id="tab-mediaext" class="tab-pane">
+          <div class="tool-card">
+            <h3><i class="fa-solid fa-file-audio"></i> Audio Extractor & Converter</h3>
+            <div class="drop-zone" id="drop-mediaext">
+              <i class="fa-solid fa-file-video drop-icon icon-media"></i>
+              <h3>Drag & Drop Video Files (MP4, WEBM, AVI, MOV)</h3>
+              <p>Extract background soundtrack/audio to WAV audio file</p>
+              <input type="file" id="input-mediaext" accept="video/*" class="file-input">
+            </div>
+
+            <div class="file-preview-list" id="mediaext-preview-list"></div>
+
+            <div class="tool-controls">
+              <button id="btn-process-media" class="btn-primary btn-large" disabled>
+                <i class="fa-solid fa-gear"></i> Extract Audio Track
+              </button>
+            </div>
+
+            <div class="result-box hidden" id="result-mediaext">
+              <div class="result-header">
+                <i class="fa-solid fa-circle-check success-icon"></i>
+                <div>
+                  <h4>Audio Track Extracted!</h4>
+                  <p id="mediaext-filename">extracted_soundtrack.wav ready</p>
+                </div>
+              </div>
+              <div class="result-actions">
+                <button id="btn-dl-mediaext" class="btn-success">
+                  <i class="fa-solid fa-download"></i> Download Audio
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 9. VIDEO DOWNLOADER TAB (WITH REAL-TIME PROGRESS BAR & RED CANCEL BUTTON) -->
+        <section id="tab-viddownload" class="tab-pane">
+          <div class="tool-card">
+            <h3 style="margin-bottom: 8px;"><i class="fa-solid fa-cloud-arrow-down icon-rec"></i> Select Video Platform Target</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 18px;">Select the platform widget first before pasting your video link.</p>
+
+            <!-- Platform Selector Widgets -->
+            <div class="platform-selector" id="platform-selector">
+              <button class="platform-btn active" data-platform="tiktok">
+                <i class="fa-brands fa-tiktok"></i> TikTok
+              </button>
+              <button class="platform-btn" data-platform="facebook">
+                <i class="fa-brands fa-facebook"></i> Facebook
+              </button>
+              <button class="platform-btn" data-platform="pinterest">
+                <i class="fa-brands fa-pinterest"></i> Pinterest
+              </button>
+              <button class="platform-btn" data-platform="youtube">
+                <i class="fa-brands fa-youtube"></i> YouTube
+              </button>
+            </div>
+
+            <div class="url-input-container" style="margin-top: 20px;">
+              <div class="url-input-wrapper">
+                <i class="fa-solid fa-link url-icon"></i>
+                <input type="url" id="input-vid-url" placeholder="Paste link here..." class="url-input">
+                <button id="btn-paste-url" class="btn-secondary btn-paste" title="Paste Link from Clipboard">
+                  <i class="fa-solid fa-paste"></i> Paste
+                </button>
+              </div>
+
+              <!-- Error Banner below paste section -->
+              <div id="vid-error-msg" class="error-banner hidden"></div>
+
+              <!-- Real-Time Progress Bar Component & Red Cancel Button -->
+              <div id="vid-progress-container" class="vid-progress-container hidden">
+                <div class="vid-progress-header">
+                  <span id="vid-progress-status"><i class="fa-solid fa-spinner fa-spin"></i> Downloading video payload...</span>
+                  <span id="vid-progress-percent" class="vid-progress-percent">0%</span>
+                </div>
+                <div class="vid-progress-bar-bg">
+                  <div id="vid-progress-fill" class="vid-progress-bar-fill" style="width: 0%;"></div>
+                </div>
+                <div class="vid-progress-footer">
+                  <span id="vid-progress-speed"><i class="fa-solid fa-bolt"></i> Speed: -- KB/s</span>
+                  <span id="vid-progress-eta"><i class="fa-regular fa-clock"></i> ETA: --:--</span>
+                </div>
+                <div style="display: flex; justify-content: flex-end; margin-top: 8px;">
+                  <button id="btn-cancel-vid-dl" class="btn-danger" style="padding: 6px 16px; font-size: 12.5px;">
+                    <i class="fa-solid fa-ban"></i> Cancel Process
+                  </button>
+                </div>
+              </div>
+
+              <div class="tool-controls">
+                <div class="control-group">
+                  <label>Format / Quality:</label>
+                  <select id="vid-quality-preset" class="form-select">
+                    <option value="mp4_hd">MP4 - HD Video (Best Quality)</option>
+                    <option value="mp4_sd">MP4 - SD Video (Smaller File)</option>
+                    <option value="mp3_audio">MP3 - Audio Soundtrack Only</option>
+                  </select>
+                </div>
+
+                <button id="btn-fetch-vid" class="btn-primary btn-large">
+                  <i class="fa-solid fa-cloud-arrow-down"></i> Fetch Video & Cover
+                </button>
+              </div>
+            </div>
+
+            <!-- Video Preview & Download Card -->
+            <div class="result-box hidden" id="result-vid-card">
+              <div class="vid-card-content">
+                <div class="vid-thumb-container">
+                  <img id="vid-thumb-img" src="" alt="Video Thumbnail">
+                  <span class="vid-duration-tag" id="vid-duration">00:00</span>
+                </div>
+                <div class="vid-details">
+                  <div class="platform-tag" id="vid-platform-tag"><i class="fa-solid fa-video"></i> Media Video</div>
+                  <h4 id="vid-title-text">Video Title Will Appear Here</h4>
+                  <p id="vid-author-text">Author / Creator info</p>
+                  <div class="vid-meta-info">
+                    <span id="vid-quality-info"><i class="fa-solid fa-film"></i> 1080p HD</span> • 
+                    <span id="vid-format-info">MP4 Video</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="result-actions vertical">
+                <button id="btn-dl-vid-direct" class="btn-success btn-large">
+                  <i class="fa-solid fa-download"></i> Download Video MP4
+                </button>
+                <button id="btn-dl-vid-audio" class="btn-secondary">
+                  <i class="fa-solid fa-music"></i> Save Audio (MP3)
+                </button>
+                <button id="btn-dl-vid-thumb" class="btn-secondary" style="border-color: var(--accent-primary); color: var(--text-primary);">
+                  <i class="fa-solid fa-image"></i> Save Cover / Thumbnail (HD)
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- REDDIT IDEA SCRAPER TAB -->
+        <section id="tab-reddit-ideas" class="tab-pane">
+          <div class="tool-card">
+
+            <!-- Controls Row: Automated Multi-Platform Generator -->
+            <div class="reddit-controls">
+              <div class="control-group" style="min-width: 190px; flex: 2;">
+                <label><i class="fa-solid fa-compass"></i> Market Niche / Focus</label>
+                <select id="idea-niche" class="form-select">
+                  <option value="all">All Niches (Broad Discovery)</option>
+                  <option value="digital_products">High-Pain Digital Products (Lifelines & High-Urgency)</option>
+                  <option value="parenting_burnout">Busy Parents & Burnout Relief</option>
+                  <option value="moms_newborn">First-Time Moms & Newborn Care</option>
+                  <option value="young_adults">Young Adults & 20s Life Reset</option>
+                  <option value="emergency_health">Family Emergency Vaults & Health Logistics</option>
+                  <option value="b2b">B2B & Freelancer Bottlenecks</option>
+                  <option value="dev">Developer Tools & CLI Scripts</option>
+                  <option value="solopreneur">Solopreneur & Micro-SaaS</option>
+                  <option value="productivity">Daily Productivity & Spreadsheets</option>
+                  <option value="ecommerce">eCommerce & Creator Tools</option>
+                </select>
+              </div>
+
+              <div class="control-group" style="min-width: 170px; flex: 1.5;">
+                <label><i class="fa-solid fa-layer-group"></i> Platforms Included</label>
+                <!-- Platform filter removed – searches now run across all platforms -->
+                <input type="hidden" id="idea-platform-filter" value="all">
+              </div>
+
+              <div class="control-group" style="min-width: 120px; flex: 1;">
+                <label><i class="fa-solid fa-list-ol"></i> Volume</label>
+                <select id="reddit-limit" class="form-select">
+                  <option value="30">30 Ideas</option>
+                  <option value="60" selected>60 Ideas</option>
+                  <option value="90">90 Ideas</option>
+                  <option value="120">120 Ideas</option>
+                </select>
+              </div>
+
+              <button id="btn-reddit-scrape" class="btn-primary btn-large" style="flex: 1.5; min-width: 210px;">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Fresh Ideas
+              </button>
+            </div>
+
+            <!-- Product Format / Type Filters -->
+            <div class="reddit-keyword-row" style="margin-bottom: 6px;">
+              <span class="reddit-filter-label"><i class="fa-solid fa-layer-group"></i> Format:</span>
+              <div id="product-type-chips" class="keyword-chips">
+                <button class="chip active type-chip" data-type="all">All Ideas</button>
+                <button class="chip type-chip" data-type="tool">Tools & Micro-SaaS</button>
+                <button class="chip type-chip" data-type="template">Templates & Sheets</button>
+                <button class="chip type-chip" data-type="guide">Guides & Playbooks</button>
+                <button class="chip type-chip" data-type="ebook">eBooks & Courses</button>
+                <button class="chip type-chip" data-type="automation">Automations & Scripts</button>
+              </div>
+            </div>
+
+            <!-- Keyword filter chips -->
+            <div class="reddit-keyword-row">
+              <span class="reddit-filter-label"><i class="fa-solid fa-filter"></i> Keyword:</span>
+              <div id="reddit-keyword-chips" class="keyword-chips">
+                <button class="chip active" data-kw="">All</button>
+                <button class="chip" data-kw="digital_products" style="background:rgba(99, 102, 241, 0.2); border-color:#6366f1; color:#a5b4fc; font-weight:700;">Digital Products</button>
+                <button class="chip" data-kw="burnout">Burnout & Overwhelm</button>
+                <button class="chip" data-kw="parenting">Parenting & Family</button>
+                <button class="chip" data-kw="career">Career & Direction</button>
+                <button class="chip" data-kw="tool">Tool</button>
+                <button class="chip" data-kw="template">Template</button>
+                <button class="chip" data-kw="course">Course</button>
+                <button class="chip" data-kw="ebook">eBook</button>
+                <button class="chip" data-kw="ai">AI</button>
+                <button class="chip" data-kw="saas">SaaS</button>
+                <button class="chip" data-kw="notion">Notion</button>
+              </div>
+            </div>
+
+            <!-- Status / spinner -->
+            <div id="reddit-status" class="reddit-status hidden">
+              <i class="fa-solid fa-spinner fa-spin"></i>
+              <span id="reddit-status-text">Fetching posts from Reddit...</span>
+            </div>
+
+            <!-- Results header -->
+            <div id="reddit-results-header" class="reddit-results-header hidden">
+              <span id="reddit-result-count">0 ideas found</span>
+              <div style="display:flex;gap:8px;">
+                <button id="btn-reddit-analyse" class="btn-gemini btn-sm">
+                  <i class="fa-solid fa-wand-magic-sparkles"></i> Analyse with Gemini
+                </button>
+                <button id="btn-reddit-csv" class="btn-secondary btn-sm">
+                  <i class="fa-solid fa-file-csv"></i> Export CSV
+                </button>
+                <button id="btn-share-x" class="btn-secondary btn-sm" title="Share on X">
+                  <i class="fa-brands fa-x-twitter"></i> X
+                </button>
+                <button id="btn-share-linkedin" class="btn-secondary btn-sm" title="Share on LinkedIn">
+                  <i class="fa-brands fa-linkedin"></i> LinkedIn
+                </button>
+              </div>
+            </div>
+
+            <!-- Gemini Summary Report (hidden until analysis done) -->
+            <div id="gemini-report" class="gemini-report hidden">
+              <div class="gemini-report-header">
+                <span><i class="fa-solid fa-wand-magic-sparkles"></i> Gemini AI Analysis</span>
+                <button id="btn-close-report" class="btn-icon-sm"><i class="fa-solid fa-xmark"></i></button>
+              </div>
+              <div id="gemini-report-body" class="gemini-report-body"></div>
+            </div>
+
+            <div id="reddit-results-grid" class="reddit-grid"></div>
+
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- AI Deep Execution Plan Modal -->
+  <div id="idea-plan-modal" class="modal-overlay hidden">
+    <div class="modal-card plan-modal-card">
+      <div class="modal-header">
+        <div class="plan-modal-title-group">
+          <div class="plan-modal-badge-row">
+            <span class="plan-modal-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> AI Product Blueprint</span>
+            <div class="modal-nav-tabs">
+              <button class="modal-tab active" data-tab="blueprint"><i class="fa-solid fa-file-lines"></i> Execution Blueprint</button>
+              <button class="modal-tab" data-tab="chat"><i class="fa-solid fa-comments"></i> AI Co-Pilot Chat</button>
+            </div>
+          </div>
+          <h3 id="plan-modal-title">Product Execution Plan</h3>
+        </div>
+        <button id="btn-close-plan-modal" class="btn-icon-sm" title="Close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <!-- Tab 1: Blueprint View -->
+      <div id="modal-tab-blueprint" class="modal-tab-view active">
+        <div id="plan-modal-body" class="modal-body plan-modal-body">
+          <!-- Dynamic Plan Content -->
+        </div>
+      </div>
+
+      <!-- Tab 2: Interactive AI Co-Pilot Chat Studio -->
+      <div id="modal-tab-chat" class="modal-tab-view">
+        <div class="plan-chat-studio">
+          
+          <!-- Quick Prompt Action Chips -->
+          <div class="quick-prompts-bar">
+            <span class="quick-prompts-label"><i class="fa-solid fa-bolt"></i> 1-Click Prompts:</span>
+            <div class="quick-prompt-chips">
+              <button class="quick-chip" data-prompt="Write the complete high-converting Gumroad sales page copy with hooks, pain points, and pricing guarantee.">Gumroad Sales Copy</button>
+              <button class="quick-chip" data-prompt="Create a complete 5-page Notion database template outline with exact property names and formula columns.">Notion Template Outline</button>
+              <button class="quick-chip" data-prompt="Give me 3 viral 15-second TikTok and Twitter/X video script hooks to sell this on impulse.">3 Viral Video Hooks</button>
+              <button class="quick-chip" data-prompt="Design a 3-tier pricing ladder and order-bump upsell strategy to maximize revenue per customer.">Pricing & Upsell Ladder</button>
+              <button class="quick-chip" data-prompt="Write the turnkey Python automation script or Zapier webhook recipe to build this immediately.">Automation Code Script</button>
+            </div>
+          </div>
+
+          <div id="plan-chat-messages" class="plan-chat-messages studio-messages">
+            <div class="chat-msg chat-msg-ai">
+              <div class="chat-bubble">I have analyzed this problem and drafted your execution plan. How can I help you refine this? You can click any 1-click prompt above or type your own question!</div>
+            </div>
+          </div>
+
+          <div class="plan-chat-input-row">
+            <input type="text" id="plan-chat-input" class="form-input plan-chat-input" placeholder="Ask AI: e.g. Write landing page copy, design Notion structure, or pricing tips..." />
+            <button id="btn-send-plan-chat" class="btn-primary btn-sm"><i class="fa-solid fa-paper-plane"></i> Send</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button id="btn-copy-full-plan" class="btn-secondary btn-sm"><i class="fa-regular fa-copy"></i> Copy Blueprint</button>
+        <button id="btn-download-plan-md" class="btn-primary btn-sm"><i class="fa-solid fa-download"></i> Save as Markdown (.md)</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
